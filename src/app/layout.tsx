@@ -1,8 +1,6 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/globals.css";
-import Head from "next/head";
-import { getCssText } from "@/stiches.config";
 import CustomThemeProvider from "../context/ThemeProvider";
 
 export const metadata = {
@@ -17,21 +15,17 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <Head>
-        <style
-          id="stitches"
-          dangerouslySetInnerHTML={{ __html: getCssText() }}
-        />
-      </Head>
       <body>
         <CustomThemeProvider>
-          <header>
-            <Navbar />
-          </header>
-          <main>{children}</main>
-          <footer>
-            <Footer />
-          </footer>
+          <div className="flex flex-col min-h-screen">
+            <header className="sticky top-0 w-full">
+              <Navbar />
+            </header>
+            <main className="flex-1 scroll-smooth">{children}</main>
+            <footer className="flex-1">
+              <Footer />
+            </footer>
+          </div>
         </CustomThemeProvider>
       </body>
     </html>
