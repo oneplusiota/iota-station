@@ -9,12 +9,12 @@ export default function Home() {
       <section id="hero" className="dark:bg-gray-950 dark:text-white h-screen">
         <HeroSection />
       </section>
-      <section id="about" className="dark:bg-gray-950 dark:text-white h-screen">
+      <section id="about" className="dark:bg-gray-950 dark:text-white h-full">
         <About />
       </section>
       <section
         id="projects"
-        className="dark:bg-gray-950 dark:text-white h-screen"
+        className="dark:bg-gray-950 dark:text-white h-full"
       >
         <Projects />
       </section>

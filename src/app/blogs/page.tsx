@@ -19,7 +19,7 @@ function Blog({ blog }: { blog: any }) {
         <div className="p-5">
           <Link href={`/blogs/${blog.id}`}>
             <h5 className="text-gray-900 font-bold text-2xl tracking-tight mb-2">
-              {blog.icon.emoji} - {blog.properties.Blog.title[0].plain_text}
+              {blog.icon.emoji} - {blog.properties.Name.title[0].plain_text}
             </h5>
           </Link>
           <p className="font-normal text-gray-700 mb-3">
@@ -40,7 +40,7 @@ function Blog({ blog }: { blog: any }) {
 
 export default async function BlogsPage() {
   const blogs = await notion.databases.query({
-    database_id: getEnvVar("NOTION_DATABASE_ID"),
+    database_id: getEnvVar("NOTION_BLOG_DATABASE_ID"),
     filter: {
       property: "Published",
       select: {
@@ -49,7 +49,7 @@ export default async function BlogsPage() {
     },
     sorts: [
       {
-        property: "Blog",
+        property: "Name",
         direction: "ascending",
       },
     ],

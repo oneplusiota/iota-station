@@ -2,6 +2,7 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 import "../styles/globals.css";
 import CustomThemeProvider from "../context/ThemeProvider";
+import Head from "next/head";
 
 export const metadata = {
   title: "Create Next App",
@@ -15,10 +16,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Head>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+      </Head>
       <body>
         <CustomThemeProvider>
           <div className="flex flex-col min-h-screen">
-            <header className="sticky top-0 w-full">
+            <header className="fixed top-0 w-full z-10 bg-transparent backdrop-blur">
               <Navbar />
             </header>
             <main className="flex-1 scroll-smooth">{children}</main>
