@@ -38,7 +38,7 @@ function getStylesComponent(item: RichTextItemResponse) {
 
   if (item.annotations.code) {
     result = (
-      <code className="bg-notion-default dark:bg-notion-dark-default text-notion-red rounded-lg px-[3px] py-[2px]">
+      <code className="bg-notion-default dark:bg-slate-300 text-notion-red rounded-md px-[3px] py-[2px] break-keep">
         {result}
       </code>
     );
@@ -50,14 +50,14 @@ function getStylesComponent(item: RichTextItemResponse) {
 export default function Richtext({ text }: Props) {
   return (
     <>
-      {text.map((item) => {
+      {text.map((item, idx) => {
         switch (item.type) {
           case "text":
-            return getStylesComponent(item);
+            return <span key={idx}>{getStylesComponent(item)}</span>;
           case "equation":
-            return getStylesComponent(item);
+            return <span key={idx}>{getStylesComponent(item)}</span>;
           case "mention":
-            return getStylesComponent(item);
+            return <span key={idx}>{getStylesComponent(item)}</span>;
           default:
             break;
         }

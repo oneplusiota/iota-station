@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;1,400&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "./theme.scss";
+
+html,
+body {
+  min-height: 100% !important;
+  height: 100%;
+}
+
+.hide-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.font-poppins {
+  font-family: "Poppins", sans-serif;
+}
+
+ol.toc-level-1 {
+  list-style-type: disc;
+  list-style-position: inside;
+}
+
+ol.toc-level-2 {
+  list-style-type: circle;
+  list-style-position: inside;
+  margin-left: 8px;
+}
+
+ol.toc-level-3 {
+  list-style-type: square;
+  list-style-position: inside;
+  margin-left: 12px;
+}
+
+ol.toc-level-1 > li > a:hover,
+ol.toc-level-2 > li > a:hover,
+ol.toc-level-3 > li > a:hover {
+  text-decoration: underline;
+}
