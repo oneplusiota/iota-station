@@ -25,7 +25,7 @@ function Project({ project }: Props) {
     });
   }
   return (
-    <div className="md:w-[70%] h-auto md:h-[18rem] w-[20.5rem] p-2 rounded-2xl shadow-lg flex justify-center items-center flex-col ease-linear duration-300 md:flex-row-reverse">
+    <div className="dark:shadow-[#004db71c] dark:shadow-md my-3 md:w-[60%] h-auto md:h-[18rem] w-[20.5rem] p-2 rounded-2xl shadow-lg flex justify-center items-center flex-col ease-linear duration-300 md:flex-row-reverse">
       <div className=" h-[70%] md:w-[50%] w-full shadow-md rounded-2xl basis-2/3 relative">
         <Link
           href={
@@ -49,7 +49,7 @@ function Project({ project }: Props) {
         </div>
       </div>
 
-      <div className=" h-full w-full mr-2 rounded-2xl">
+      <div className="h-full w-auto mr-2 rounded-2xl">
         <p className="m-2 font-bold pl-1 text-lg text-indigo-500">
           Project Name
         </p>

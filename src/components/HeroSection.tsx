@@ -9,7 +9,7 @@ function HeroSection() {
       </p>
       <a
         className="flex justify-center items-center px-2 py-1 mt-2 rounded-lg border-[1px] border-black bg-slate-300 hover:bg-slate-200 transition ease-in duration-300"
-        href="http://www.google.com"
+        href="https://drive.google.com/file/d/1F5f4Hk5Z4lJmWwDwV2bBRsUpTCA-pm48/view"
         target="_blank"
       >
         <svg
