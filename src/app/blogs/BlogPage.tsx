@@ -43,7 +43,7 @@ export default function BlogPage({ results }: Props) {
           All Posts {`(${filteredBlogs.length})`}
         </h1>
       </div>
-      <ul className="container w-full md:w-3/5">
+      <ul className="container w-full md:w-3/5 min-h-[36rem]">
         {filteredBlogs.map((blog) => (
           //@ts-ignore
           <Blog key={blog.id} blog={blog} />
