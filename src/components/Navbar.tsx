@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -11,15 +11,32 @@ import {
 import { useTheme } from "next-themes";
 import CustomThemeProvider from "../context/ThemeProvider";
 
-const Navbar: React.FC = () => {
+type Props = {
+  clickAway: boolean;
+  setClickAway: React.Dispatch<React.SetStateAction<boolean>>;
+  isMobileMenuOpen: boolean;
+  setMobileMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+const Navbar = ({
+  clickAway,
+  setClickAway,
+  isMobileMenuOpen,
+  setMobileMenuOpen,
+}: Props): ReactElement => {
   const { theme, setTheme } = useTheme();
-  const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // When mounted on client, now we can show the UI
 
   const handleMobileMenuToggle = () => {
-    setMobileMenuOpen(!isMobileMenuOpen);
+    if (isMobileMenuOpen) {
+      setClickAway(false);
+    } else {
+      setClickAway(true);
+    }
+    setMobileMenuOpen((prev) => !prev);
   };
+
   return (
     <nav className={`py-4 flex justify-center items-center px-6 md:px-10`}>
       <div className="container flex flex-col items-center justify-between">
@@ -59,13 +76,13 @@ const Navbar: React.FC = () => {
           <div className="flex items-center justify-center md:hidden">
             <button onClick={handleMobileMenuToggle}>
               <FontAwesomeIcon
-                icon={isMobileMenuOpen ? faTimes : faBars}
+                icon={clickAway && isMobileMenuOpen ? faTimes : faBars}
                 className={`text-xl transition-transform ease-in-out delay-100`}
               />
             </button>
           </div>
         </div>
-        {isMobileMenuOpen && (
+        {clickAway && isMobileMenuOpen && (
           <div className={`py-2 bg-transparent backdrop-blur`}>
             <ul className="flex flex-col items-center space-y-4">
               <li>

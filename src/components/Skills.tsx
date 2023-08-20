@@ -4,12 +4,23 @@ type Props = {};
 
 function Skills({}: Props) {
   const skills = [
-    { name: "HTML", level: "Expert" },
+    { name: "C/C++", level: "Advanced" },
+    { name: "Java", level: "Advanced" },
+    { name: "Python", level: "Advanced" },
+    { name: "Javascript", level: "Advanced" },
+    { name: "HTML", level: "Advanced" },
     { name: "CSS", level: "Advanced" },
-    { name: "JavaScript", level: "Advanced" },
-    { name: "React", level: "Intermediate" },
     { name: "Tailwind CSS", level: "Intermediate" },
+    { name: "React", level: "Intermediate" },
+    { name: "Node.js", level: "Advanced" },
+    { name: "Express.js", level: "Advanced" },
     { name: "Next.js", level: "Intermediate" },
+    { name: "Nest.js", level: "Advanced" },
+    { name: "Springboot", level: "Intermediate" },
+    { name: "Jest", level: "Intermediate" },
+    { name: "AWS/Azure", level: "Intermediate" },
+    { name: "GCP", level: "Advanced" },
+    { name: "Postman", level: "Intermediate" },
   ];
 
   return (
