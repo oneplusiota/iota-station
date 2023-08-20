@@ -19,7 +19,7 @@ function MainSection({ children }: Props) {
         />
       </header>
       <main
-        className="flex-1 relative top-22 flex justify-center items-center flex-col w-full scroll-smooth"
+        className="flex-1 relative dark:bg-gray-950 dark:text-white top-22 flex justify-center items-center flex-col w-full scroll-smooth"
         onClick={() => {
           setClickAway(false);
           setMobileMenuOpen(false);
