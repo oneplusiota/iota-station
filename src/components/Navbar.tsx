@@ -1,7 +1,7 @@
 "use client";
 import React, { ReactElement, useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faMoon,
@@ -32,30 +32,39 @@ type NavItemProps = {
   onClick?: () => void;
 };
 
-const NavItem = ({ href, icon, label, isActive, onClick }: NavItemProps) => (
-  <Link 
-    href={href} 
-    className="group relative"
-    onClick={onClick}
-    prefetch={true}
-  >
-    <div className={`
-      flex justify-center items-center w-12 h-12 rounded-full 
-      ${isActive 
-        ? 'bg-indigo-600 text-white' 
-        : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
-      }
-      hover:scale-110 transition-all duration-300 shadow-md
-      group-hover:bg-indigo-500 group-hover:text-white
-    `}>
-      <FontAwesomeIcon icon={icon} className="text-xl" />
-    </div>
-    
-    <div className="absolute left-16 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gray-800 text-white px-2 py-1 rounded whitespace-nowrap z-10">
-      {label}
-    </div>
-  </Link>
-);
+const NavItem = ({ href, icon, label, isActive, onClick }: NavItemProps) => {
+  const router = useRouter();
+  
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (onClick) onClick();
+    router.push(href);
+  };
+  
+  return (
+    <a 
+      href={href} 
+      className="group relative"
+      onClick={handleClick}
+    >
+      <div className={`
+        flex justify-center items-center w-12 h-12 rounded-full 
+        ${isActive 
+          ? 'bg-indigo-600 text-white' 
+          : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+        }
+        hover:scale-110 transition-all duration-300 shadow-md
+        group-hover:bg-indigo-500 group-hover:text-white
+      `}>
+        <FontAwesomeIcon icon={icon} className="text-xl" />
+      </div>
+      
+      <div className="absolute left-16 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gray-800 text-white px-2 py-1 rounded whitespace-nowrap z-10">
+        {label}
+      </div>
+    </a>
+  );
+};
 
 const Navbar = ({
   clickAway,
@@ -66,6 +75,7 @@ const Navbar = ({
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   // When mounted on client, now we can show the UI
   useEffect(() => {
@@ -82,22 +92,28 @@ const Navbar = ({
   };
 
   const isActive = (path: string) => {
+    if (!pathname) return false;
     if (path === '/') return pathname === '/';
-    return pathname?.startsWith(path) || false;
+    return pathname.startsWith(path);
+  };
+
+  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    router.push('/');
   };
 
   return (
     <nav className="fixed left-0 top-0 h-full flex flex-col justify-center items-center px-4 z-50">
       <div className="py-8 flex flex-col items-center space-y-6 bg-white/10 dark:bg-gray-900/10 backdrop-blur-sm rounded-full px-4">
-        <Link
+        <a
           href="/"
           className="mb-6 w-12 h-12 flex justify-center items-center rounded-full bg-indigo-600 text-white hover:scale-110 transition-all duration-300 shadow-md"
-          prefetch={true}
+          onClick={handleLogoClick}
         >
           <span className="text-xl font-bold">
             {personalInfo.name.split(' ').map(name => name[0]).join('')}
           </span>
-        </Link>
+        </a>
         
         <NavItem 
           href="/" 
