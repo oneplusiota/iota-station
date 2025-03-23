@@ -1,6 +1,12 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require("tailwindcss/colors");
 
+// Remove deprecated color names
+const { 
+  lightBlue, warmGray, trueGray, coolGray, blueGray,
+  ...restColors 
+} = colors;
+
 module.exports = {
   darkMode: "class",
   content: [
@@ -66,7 +72,7 @@ module.exports = {
       }),
     },
     colors: {
-      ...colors,
+      ...restColors,
       notion: {
         default: "#e5dada",
         gray: "#9B9A97",
