@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
 import personalInfo from "../config/personal-info";
 
@@ -54,16 +54,6 @@ function HeroSection() {
             <FontAwesomeIcon icon={faLinkedin} className="text-2xl" />
           </a>
         </div>
-      </div>
-      
-      <div className="absolute bottom-10 animate-bounce w-full flex justify-center">
-        <a 
-          href="#about" 
-          aria-label="Scroll to About section"
-          className="p-3 bg-gray-200 dark:bg-gray-800 rounded-full shadow-md"
-        >
-          <FontAwesomeIcon icon={faArrowDown} className="text-2xl text-indigo-600 dark:text-indigo-400" />
-        </a>
       </div>
     </div>
   );

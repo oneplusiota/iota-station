@@ -1,43 +1,19 @@
-"use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { fetchBlogs } from "../../utils/github-utils";
 import BlogPage from "./BlogPage";
 
-// Force static generation
-export const dynamic = 'force-static';
+// Use static rendering with server-side data fetching
+export const dynamic = 'error';
+export const dynamicParams = false;
 export const revalidate = false;
+export const fetchCache = 'force-cache';
+export const runtime = 'nodejs';
+export const preferredRegion = 'auto';
 
-export default function Blogs() {
-  const [blogs, setBlogs] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBlogs() {
-      try {
-        const response = await fetch('/api/blogs');
-        if (!response.ok) {
-          throw new Error('Failed to fetch blogs');
-        }
-        const data = await response.json();
-        setBlogs(data.results || []);
-      } catch (error) {
-        console.error('Error fetching blogs:', error);
-        setBlogs([]);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-
-    fetchBlogs();
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="container mx-auto px-6 py-16 max-w-6xl flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
-
+export default async function Blogs() {
+  // Fetch blogs server-side
+  const blogs = await fetchBlogs();
+  
   return (
     <div className="container mx-auto px-6 py-16 max-w-6xl">
       <BlogPage results={blogs} />

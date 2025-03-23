@@ -33,36 +33,30 @@ type NavItemProps = {
 };
 
 const NavItem = ({ href, icon, label, isActive, onClick }: NavItemProps) => {
-  const router = useRouter();
-  
-  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    if (onClick) onClick();
-    router.push(href);
-  };
-  
   return (
-    <a 
-      href={href} 
-      className="group relative"
-      onClick={handleClick}
-    >
-      <div className={`
-        flex justify-center items-center w-12 h-12 rounded-full 
-        ${isActive 
-          ? 'bg-indigo-600 text-white' 
-          : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
-        }
-        hover:scale-110 transition-all duration-300 shadow-md
-        group-hover:bg-indigo-500 group-hover:text-white
-      `}>
-        <FontAwesomeIcon icon={icon} className="text-xl" />
-      </div>
+    <div className="group relative">
+      <a 
+        href={href} 
+        onClick={onClick}
+        className="block"
+      >
+        <div className={`
+          flex justify-center items-center w-12 h-12 rounded-full cursor-pointer
+          ${isActive 
+            ? 'bg-indigo-600 text-white' 
+            : 'bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-300'
+          }
+          hover:scale-110 transition-all duration-300 shadow-md
+          group-hover:bg-indigo-500 group-hover:text-white
+        `}>
+          <FontAwesomeIcon icon={icon} className="text-xl" />
+        </div>
+      </a>
       
       <div className="absolute left-16 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gray-800 text-white px-2 py-1 rounded whitespace-nowrap z-10">
         {label}
       </div>
-    </a>
+    </div>
   );
 };
 
@@ -97,22 +91,18 @@ const Navbar = ({
     return pathname.startsWith(path);
   };
 
-  const handleLogoClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    router.push('/');
-  };
-
   return (
     <nav className="fixed left-0 top-0 h-full flex flex-col justify-center items-center px-4 z-50">
       <div className="py-8 flex flex-col items-center space-y-6 bg-white/10 dark:bg-gray-900/10 backdrop-blur-sm rounded-full px-4">
         <a
           href="/"
-          className="mb-6 w-12 h-12 flex justify-center items-center rounded-full bg-indigo-600 text-white hover:scale-110 transition-all duration-300 shadow-md"
-          onClick={handleLogoClick}
+          className="block"
         >
-          <span className="text-xl font-bold">
-            {personalInfo.name.split(' ').map(name => name[0]).join('')}
-          </span>
+          <div className="mb-6 w-12 h-12 flex justify-center items-center rounded-full bg-indigo-600 text-white hover:scale-110 transition-all duration-300 shadow-md cursor-pointer">
+            <span className="text-xl font-bold">
+              {personalInfo.name.split(' ').map(name => name[0]).join('')}
+            </span>
+          </div>
         </a>
         
         <NavItem 
