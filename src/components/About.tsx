@@ -19,14 +19,15 @@ function About() {
     );
 
     if (sectionRef.current) {
-      observer.observe(sectionRef.current);
+      const currentRef = sectionRef.current;
+      observer.observe(currentRef);
+
+      return () => {
+        observer.unobserve(currentRef);
+      };
     }
 
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
+    return () => {};
   }, []);
 
   // Format bio text into paragraphs

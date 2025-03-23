@@ -1,16 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require("tailwindcss/colors");
 
-// Remove deprecated color names and use their replacements
-const { 
-  lightBlue, // -> sky
-  warmGray,  // -> stone
-  trueGray,  // -> neutral
-  coolGray,  // -> gray
-  blueGray,  // -> slate
-  ...restColors 
-} = colors;
-
 module.exports = {
   darkMode: "class",
   content: [
@@ -74,29 +64,16 @@ module.exports = {
           },
         },
       }),
-    },
-    colors: {
-      ...restColors,
-      // Add the renamed colors back with their new names
-      sky: colors.sky,
-      stone: colors.stone,
-      neutral: colors.neutral,
-      gray: colors.gray,
-      slate: colors.slate,
-      // Custom colors
-      notion: {
-        default: "#e5dada",
-        gray: "#9B9A97",
-        brown: "#64473A",
-        orange: "#D9730D",
-        yellow: "#DFAB01",
-        green: "#0F7B6C",
-        blue: "#0B6E99",
-        purple: "#6940A5",
-        pink: "#AD1A72",
-        red: "#E03E3E",
-        dark: {
-          default: "#37352F",
+      colors: {
+        // Add explicit mappings for renamed Tailwind colors
+        sky: colors.sky,     // replaces lightBlue
+        stone: colors.stone, // replaces warmGray
+        neutral: colors.neutral, // replaces trueGray
+        gray: colors.gray,   // replaces coolGray
+        slate: colors.slate, // replaces blueGray
+        // Custom colors
+        notion: {
+          default: "#e5dada",
           gray: "#9B9A97",
           brown: "#64473A",
           orange: "#D9730D",
@@ -106,6 +83,18 @@ module.exports = {
           purple: "#6940A5",
           pink: "#AD1A72",
           red: "#E03E3E",
+          dark: {
+            default: "#37352F",
+            gray: "#9B9A97",
+            brown: "#64473A",
+            orange: "#D9730D",
+            yellow: "#DFAB01",
+            green: "#0F7B6C",
+            blue: "#0B6E99",
+            purple: "#6940A5",
+            pink: "#AD1A72",
+            red: "#E03E3E",
+          },
         },
       },
     },

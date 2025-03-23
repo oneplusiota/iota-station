@@ -1,14 +1,16 @@
 "use client";
-import React, { ReactNode, useState } from "react";
+import React, { ReactNode, useState, useEffect } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 type Props = { children: ReactNode };
 
 function MainSection({ children }: Props) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [clickAway, setClickAway] = useState<boolean>(false);
+  const pathname = usePathname();
 
   // Page transition variants
   const pageVariants = {
@@ -46,7 +48,7 @@ function MainSection({ children }: Props) {
       {/* Main Content with Left Padding for Sidebar */}
       <AnimatePresence mode="wait">
         <motion.main
-          key={Math.random()} // Force re-render on route change
+          key={pathname} // Use pathname as key instead of random number
           initial="initial"
           animate="animate"
           exit="exit"

@@ -9,10 +9,11 @@ export const metadata: Metadata = {
   keywords: ["Backend Developer", "Java", "Springboot", "Node.js", "IIT Kharagpur", "Portfolio", "Web Development"],
   authors: [{ name: "Shivam Nayak" }],
   creator: "Shivam Nayak",
+  metadataBase: new URL("https://oneplusiota.vercel.app"),
   openGraph: {
     title: "Shivam Nayak | Backend Developer",
     description: "Backend Developer specializing in Java Springboot and Node.js. Final year student at IIT Kharagpur.",
-    url: "https://your-domain.com",
+    url: "https://oneplusiota.vercel.app",
     siteName: "Shivam Nayak Portfolio",
     images: [
       {
