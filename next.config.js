@@ -1,15 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_ENV: process.env.NEXT_PUBLIC_ENV || 'local',
+  },
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "www.notion.so",
-        port: "",
-        pathname: "/images/**",
-      },
-    ],
+    domains: ['github.com', 'raw.githubusercontent.com'],
   },
 };
 

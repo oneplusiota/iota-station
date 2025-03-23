@@ -1,106 +1,49 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Richtext from "./notion-components/Richtext";
-import { PageObjectResponse } from "@notionhq/client/build/src/api-endpoints";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt, faArrowRight, faCode, faLaptopCode } from "@fortawesome/free-solid-svg-icons";
 import { faGithub as faGithubBrand } from "@fortawesome/free-brands-svg-icons";
 import { motion } from "framer-motion";
 
-// Extend PageObjectResponse to include our custom properties
-interface ExtendedPageObjectResponse extends PageObjectResponse {
-  section?: string;
-  featured?: boolean;
-}
-
-type ProjectProps = { 
-  project: ExtendedPageObjectResponse;
-  index: number;
-  isVisible: boolean;
-  featured?: boolean;
+type RichTextItem = {
+  type: string;
+  plain_text: string;
+  href?: string;
+  annotations: {
+    bold: boolean;
+    italic: boolean;
+    strikethrough: boolean;
+    underline: boolean;
+    code: boolean;
+    color: string;
+  };
 };
 
-// Sample project data for fallback when API is not available
-const sampleProjects = [
-  {
-    id: "1",
-    cover: { type: "external", external: { url: "/defaultproject.jpeg" } },
-    properties: {
-      "Name": { 
-        type: "title", 
-        title: [{ plain_text: "Portfolio Website", annotations: {}, type: "text" }] 
-      },
-      "Description": { 
-        type: "rich_text", 
-        rich_text: [{ plain_text: "A modern portfolio website built with Next.js and Tailwind CSS.", annotations: {}, type: "text" }] 
-      },
-      "Github Link": { type: "url", url: "https://github.com/yourusername/portfolio" },
-      "Live Link": { type: "url", url: "https://your-portfolio.com" },
-      "tags": { 
-        type: "multi_select", 
-        multi_select: [
-          { id: "1", name: "Next.js" },
-          { id: "2", name: "Tailwind CSS" },
-          { id: "3", name: "React" }
-        ]
-      }
-    }
-  },
-  {
-    id: "2",
-    cover: { type: "external", external: { url: "/defaultproject.jpeg" } },
-    properties: {
-      "Name": { 
-        type: "title", 
-        title: [{ plain_text: "E-commerce Platform", annotations: {}, type: "text" }] 
-      },
-      "Description": { 
-        type: "rich_text", 
-        rich_text: [{ plain_text: "A full-stack e-commerce platform with payment integration.", annotations: {}, type: "text" }] 
-      },
-      "Github Link": { type: "url", url: "https://github.com/yourusername/ecommerce" },
-      "tags": { 
-        type: "multi_select", 
-        multi_select: [
-          { id: "4", name: "Node.js" },
-          { id: "5", name: "Express" },
-          { id: "6", name: "MongoDB" }
-        ]
-      }
-    }
-  }
-];
+type Link = {
+  type: string;
+  url: string;
+  label?: string;
+};
+
+type Project = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  tags: string[];
+  githubUrl?: string;
+  liveUrl?: string;
+  featured?: boolean;
+  links?: Link[];
+  section?: string;
+};
 
 // Regular Project Card
-function Project({ project, index, isVisible, featured = false }: ProjectProps) {
+function Project({ project, index, isVisible, featured = false }: { project: Project; index: number; isVisible: boolean; featured?: boolean }) {
   const delay = index * 0.15;
   
-  let path = "/defaultproject.jpeg";
-  if (project.cover && project.cover.type === "external") {
-    path = project.cover.external.url;
-  } else if (project.cover && project.cover.type === "file") {
-    path = project.cover.file.url;
-  }
-
-  let projectName = "";
-  if (project.properties["Name"].type === "title") {
-    project.properties["Name"].title.forEach((text) => {
-      projectName += text.plain_text;
-    });
-  }
-  
-  // Get all links from properties
-  const links = Object.entries(project.properties)
-    .filter(([key, value]) => value?.type === "url" && value.url)
-    .map(([key, value]) => ({
-      key,
-      url: (value as any).url as string,
-      isGithub: key.toLowerCase().includes('github'),
-      isLive: key.toLowerCase().includes('live') || key.toLowerCase().includes('demo')
-    }));
-
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
@@ -113,8 +56,8 @@ function Project({ project, index, isVisible, featured = false }: ProjectProps) 
       <div className={`relative ${featured ? 'h-64 md:h-80' : 'h-56'} overflow-hidden`}>
         {/* Project Image */}
         <Image
-          src={path}
-          alt={projectName}
+          src={project.image}
+          alt={project.title}
           fill
           className="object-cover transition-transform duration-700 group-hover:scale-105"
           sizes={featured ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"}
@@ -133,31 +76,25 @@ function Project({ project, index, isVisible, featured = false }: ProjectProps) 
         
         {/* Tags Overlay */}
         <div className="absolute top-4 left-4 z-10 flex flex-wrap gap-2">
-          {project.properties["tags"]?.type === "multi_select" && 
-            project.properties["tags"].multi_select.slice(0, featured ? 4 : 2).map((tag) => (
-              <span
-                key={tag.id}
-                className="px-3 py-1 text-xs font-medium bg-black/60 text-white backdrop-blur-sm rounded-full border border-white/20"
-              >
-                {tag.name}
-              </span>
-            ))}
-          {project.properties["tags"]?.type === "multi_select" && 
-            project.properties["tags"].multi_select.length > (featured ? 4 : 2) && (
-              <span className="px-3 py-1 text-xs font-medium bg-black/60 text-white backdrop-blur-sm rounded-full border border-white/20">
-                +{project.properties["tags"].multi_select.length - (featured ? 4 : 2)}
-              </span>
-            )}
+          {project.tags.slice(0, featured ? 4 : 2).map((tag, idx) => (
+            <span
+              key={idx}
+              className="px-3 py-1 text-xs font-medium bg-black/60 text-white backdrop-blur-sm rounded-full border border-white/20"
+            >
+              {tag}
+            </span>
+          ))}
+          {project.tags.length > (featured ? 4 : 2) && (
+            <span className="px-3 py-1 text-xs font-medium bg-black/60 text-white backdrop-blur-sm rounded-full border border-white/20">
+              +{project.tags.length - (featured ? 4 : 2)}
+            </span>
+          )}
         </div>
         
         {/* Title Overlay */}
         <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
           <h3 className={`${featured ? 'text-2xl' : 'text-xl'} font-bold mb-1 group-hover:text-indigo-300 transition-colors duration-300`}>
-            {project.properties["Name"].type === "title" ? (
-              <Richtext text={project.properties["Name"].title} />
-            ) : (
-              ""
-            )}
+            {project.title}
           </h3>
         </div>
       </div>
@@ -165,24 +102,20 @@ function Project({ project, index, isVisible, featured = false }: ProjectProps) 
       <div className="p-6 flex-grow flex flex-col">
         {/* Description */}
         <div className="text-sm text-gray-600 dark:text-gray-400 mb-6 flex-grow">
-          {project.properties["Description"]?.type === "rich_text" ? (
-            <Richtext text={project.properties["Description"].rich_text} />
-          ) : (
-            ""
-          )}
+          {project.description}
         </div>
         
         {/* Tech Stack */}
-        {project.properties["tags"]?.type === "multi_select" && (
+        {project.tags && (
           <div className="mb-6">
             <h4 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-2 font-semibold">Tech Stack</h4>
             <div className="flex flex-wrap gap-2">
-              {project.properties["tags"].multi_select.map((tag) => (
+              {project.tags.map((tag, idx) => (
                 <span
-                  key={tag.id}
+                  key={idx}
                   className="inline-block bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full px-3 py-1 text-xs font-medium"
                 >
-                  {tag.name}
+                  {tag}
                 </span>
               ))}
             </div>
@@ -191,27 +124,47 @@ function Project({ project, index, isVisible, featured = false }: ProjectProps) 
         
         {/* Links */}
         <div className="flex flex-wrap gap-3 mt-auto">
-          {links.map((link) => (
+          {project.githubUrl && (
             <Link
-              key={link.key}
-              href={link.url}
+              href={project.githubUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center justify-center px-4 py-2 rounded-lg transition-all duration-300 ${
-                link.isGithub 
-                  ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 hover:shadow-md' 
-                  : link.isLive
-                  ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 hover:shadow-md'
-                  : 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md'
-              }`}
+              className="flex items-center justify-center px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 hover:shadow-md"
             >
-              <FontAwesomeIcon 
-                icon={link.isGithub ? faGithubBrand : faExternalLinkAlt} 
-                className="mr-2" 
-              />
-              <span>{link.key.replace(' Link', '')}</span>
+              <FontAwesomeIcon icon={faGithubBrand} className="mr-2" />
+              <span>GitHub</span>
             </Link>
-          ))}
+          )}
+          
+          {project.liveUrl && (
+            <Link
+              href={project.liveUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center px-4 py-2 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 transition-all duration-300 hover:shadow-md"
+            >
+              <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
+              <span>Live Demo</span>
+            </Link>
+          )}
+          
+          {/* Additional Links */}
+          {project.links && project.links.map((link, idx) => {
+            // Skip GitHub and Live links as they're already handled above
+            if (link.type === 'github' || link.type === 'live') return null;
+            
+            return (
+              <Link
+                key={idx}
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center px-4 py-2 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 hover:shadow-md"
+              >
+                <span>{link.label || link.type}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </motion.div>
@@ -219,33 +172,9 @@ function Project({ project, index, isVisible, featured = false }: ProjectProps) 
 }
 
 // Featured Project Card (Horizontal Layout)
-function FeaturedProjectHorizontal({ project, index, isVisible }: ProjectProps) {
+function FeaturedProjectHorizontal({ project, index, isVisible }: { project: Project; index: number; isVisible: boolean }) {
   const delay = index * 0.15;
   
-  let path = "/defaultproject.jpeg";
-  if (project.cover && project.cover.type === "external") {
-    path = project.cover.external.url;
-  } else if (project.cover && project.cover.type === "file") {
-    path = project.cover.file.url;
-  }
-
-  let projectName = "";
-  if (project.properties["Name"].type === "title") {
-    project.properties["Name"].title.forEach((text) => {
-      projectName += text.plain_text;
-    });
-  }
-  
-  // Get all links from properties
-  const links = Object.entries(project.properties)
-    .filter(([key, value]) => value?.type === "url" && value.url)
-    .map(([key, value]) => ({
-      key,
-      url: (value as any).url as string,
-      isGithub: key.toLowerCase().includes('github'),
-      isLive: key.toLowerCase().includes('live') || key.toLowerCase().includes('demo')
-    }));
-
   return (
     <motion.div 
       initial={{ opacity: 0, y: 30 }}
@@ -257,8 +186,8 @@ function FeaturedProjectHorizontal({ project, index, isVisible }: ProjectProps) 
         {/* Left: Image (on mobile: top) */}
         <div className="relative h-64 md:h-auto md:w-1/2 overflow-hidden">
           <Image
-            src={path}
-            alt={projectName}
+            src={project.image}
+            alt={project.title}
             fill
             className="object-cover transition-transform duration-700 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, 50vw"
@@ -274,11 +203,7 @@ function FeaturedProjectHorizontal({ project, index, isVisible }: ProjectProps) 
           {/* Mobile Title (hidden on desktop) */}
           <div className="absolute bottom-0 left-0 right-0 p-5 text-white md:hidden">
             <h3 className="text-2xl font-bold mb-1 group-hover:text-indigo-300 transition-colors duration-300">
-              {project.properties["Name"].type === "title" ? (
-                <Richtext text={project.properties["Name"].title} />
-              ) : (
-                ""
-              )}
+              {project.title}
             </h3>
           </div>
         </div>
@@ -288,34 +213,26 @@ function FeaturedProjectHorizontal({ project, index, isVisible }: ProjectProps) 
           {/* Desktop Title (hidden on mobile) */}
           <div className="hidden md:block mb-4">
             <h3 className="text-2xl font-bold text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
-              {project.properties["Name"].type === "title" ? (
-                <Richtext text={project.properties["Name"].title} />
-              ) : (
-                ""
-              )}
+              {project.title}
             </h3>
           </div>
           
           {/* Description */}
           <div className="text-gray-600 dark:text-gray-300 mb-6">
-            {project.properties["Description"]?.type === "rich_text" ? (
-              <Richtext text={project.properties["Description"].rich_text} />
-            ) : (
-              ""
-            )}
+            {project.description}
           </div>
           
           {/* Tech Stack */}
-          {project.properties["tags"]?.type === "multi_select" && (
+          {project.tags && (
             <div className="mb-8">
               <h4 className="text-xs uppercase tracking-wider text-gray-500 dark:text-gray-400 mb-3 font-semibold">Tech Stack</h4>
               <div className="flex flex-wrap gap-2">
-                {project.properties["tags"].multi_select.map((tag) => (
+                {project.tags.map((tag, idx) => (
                   <span
-                    key={tag.id}
+                    key={idx}
                     className="inline-block bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 rounded-full px-3 py-1 text-xs font-medium"
                   >
-                    {tag.name}
+                    {tag}
                   </span>
                 ))}
               </div>
@@ -343,27 +260,47 @@ function FeaturedProjectHorizontal({ project, index, isVisible }: ProjectProps) 
           
           {/* Links */}
           <div className="flex flex-wrap gap-3 mt-auto">
-            {links.map((link) => (
+            {project.githubUrl && (
               <Link
-                key={link.key}
-                href={link.url}
+                href={project.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`flex items-center justify-center px-5 py-2.5 rounded-lg transition-all duration-300 ${
-                  link.isGithub 
-                    ? 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 hover:shadow-md' 
-                    : link.isLive
-                    ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 hover:shadow-md'
-                    : 'bg-blue-500 text-white hover:bg-blue-600 hover:shadow-md'
-                }`}
+                className="flex items-center justify-center px-5 py-2.5 rounded-lg bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200 hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-300 hover:shadow-md"
               >
-                <FontAwesomeIcon 
-                  icon={link.isGithub ? faGithubBrand : faExternalLinkAlt} 
-                  className="mr-2" 
-                />
-                <span>{link.key.replace(' Link', '')}</span>
+                <FontAwesomeIcon icon={faGithubBrand} className="mr-2" />
+                <span>GitHub</span>
               </Link>
-            ))}
+            )}
+            
+            {project.liveUrl && (
+              <Link
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center px-5 py-2.5 rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 text-white hover:from-indigo-700 hover:to-indigo-800 transition-all duration-300 hover:shadow-md"
+              >
+                <FontAwesomeIcon icon={faExternalLinkAlt} className="mr-2" />
+                <span>Live Demo</span>
+              </Link>
+            )}
+            
+            {/* Additional Links */}
+            {project.links && project.links.map((link, idx) => {
+              // Skip GitHub and Live links as they're already handled above
+              if (link.type === 'github' || link.type === 'live') return null;
+              
+              return (
+                <Link
+                  key={idx}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center px-5 py-2.5 rounded-lg bg-blue-500 text-white hover:bg-blue-600 transition-all duration-300 hover:shadow-md"
+                >
+                  <span>{link.label || link.type}</span>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -372,7 +309,7 @@ function FeaturedProjectHorizontal({ project, index, isVisible }: ProjectProps) 
 }
 
 export default function Projects() {
-  const [projects, setProjects] = useState<ExtendedPageObjectResponse[]>([]);
+  const [projects, setProjects] = useState<Project[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isVisible, setIsVisible] = useState(false);
   const [error, setError] = useState(false);
@@ -388,11 +325,92 @@ export default function Projects() {
         }
         
         const data = await response.json();
-        setProjects(data.results || []);
+        
+        // Transform API response to our Project type
+        const transformedProjects = data.results.map((project: any) => {
+          // Extract image path
+          let imagePath = "/defaultproject.jpeg";
+          if (project.cover && project.cover.type === "external") {
+            imagePath = project.cover.external.url;
+          } else if (project.cover && project.cover.type === "file") {
+            imagePath = project.cover.file.url;
+          }
+          
+          // Extract title
+          let title = "";
+          if (project.properties["Name"]?.type === "title") {
+            project.properties["Name"].title.forEach((text: any) => {
+              title += text.plain_text;
+            });
+          }
+          
+          // Extract description
+          let description = "";
+          if (project.properties["Description"]?.type === "rich_text") {
+            project.properties["Description"].rich_text.forEach((text: any) => {
+              description += text.plain_text;
+            });
+          }
+          
+          // Extract tags
+          const tags = project.properties["tags"]?.type === "multi_select" 
+            ? project.properties["tags"].multi_select.map((tag: any) => tag.name)
+            : [];
+            
+          // Extract GitHub and Live URLs
+          const githubUrl = project.properties["GitHub Repository"]?.type === "url" 
+            ? project.properties["GitHub Repository"].url 
+            : undefined;
+            
+          const liveUrl = project.properties["Live Demo"]?.type === "url" 
+            ? project.properties["Live Demo"].url 
+            : undefined;
+          
+          // Extract links
+          const links: Link[] = [];
+          
+          // Look for properties that are URLs and convert them to links
+          Object.entries(project.properties).forEach(([key, value]: [string, any]) => {
+            if (value && value.type === "url" && value.url) {
+              const isGithub = key.toLowerCase().includes('github');
+              const isLive = key.toLowerCase().includes('live') || key.toLowerCase().includes('demo');
+              const isDoc = key.toLowerCase().includes('doc');
+              
+              links.push({
+                type: isGithub ? 'github' : isLive ? 'live' : isDoc ? 'documentation' : 'external',
+                url: value.url,
+                label: key.replace(' Link', '')
+              });
+            }
+          });
+          
+          // Extract section
+          const section = project.properties["Section"]?.type === "select" 
+            ? project.properties["Section"].select?.name || "Other Projects"
+            : project.section || "Other Projects";
+          
+          // Extract featured flag
+          const featured = project.properties["Featured"]?.type === "checkbox" 
+            ? project.properties["Featured"].checkbox 
+            : project.featured || false;
+          
+          return {
+            id: project.id,
+            title,
+            description,
+            image: imagePath,
+            tags,
+            githubUrl,
+            liveUrl,
+            links,
+            section,
+            featured
+          };
+        });
+        
+        setProjects(transformedProjects);
       } catch (error) {
         console.error('Error fetching projects:', error);
-        // Use sample projects as fallback when API fails
-        setProjects(sampleProjects as unknown as ExtendedPageObjectResponse[]);
         setError(true);
       } finally {
         setIsLoading(false);
@@ -401,6 +419,15 @@ export default function Projects() {
 
     fetchProjects();
   }, []);
+
+  // Ensure at least one project is marked as featured
+  useEffect(() => {
+    if (projects.length > 0 && !projects.some(project => project.featured)) {
+      const updatedProjects = [...projects];
+      updatedProjects[0].featured = true;
+      setProjects(updatedProjects);
+    }
+  }, [projects]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -426,12 +453,10 @@ export default function Projects() {
 
   // Group projects by section
   const groupProjectsBySection = () => {
-    const sections: Record<string, ExtendedPageObjectResponse[]> = {};
+    const sections: Record<string, Project[]> = {};
     
     projects.forEach(project => {
-      const section = project.properties["Section"]?.type === "select" 
-        ? project.properties["Section"].select?.name || "Other Projects"
-        : project.section || "Other Projects";
+      const section = project.section || "Other Projects";
       
       if (!sections[section]) {
         sections[section] = [];
@@ -449,11 +474,9 @@ export default function Projects() {
   const getFeaturedProjects = () => {
     // Filter projects that have the featured flag set to true
     const featured = projects.filter(project => project.featured === true);
-    console.log("Featured projects:", featured);
     
     // If no featured projects found, mark the first project as featured
     if (featured.length === 0 && projects.length > 0) {
-      console.log("No featured projects found, using first project as featured");
       return [projects[0]];
     }
     
@@ -477,13 +500,18 @@ export default function Projects() {
         <>
           {error && (
             <div className="mb-8 p-4 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg">
-              <p>Using sample project data. Connect to GitHub for real projects.</p>
+              <p>Error loading projects. Using local project data.</p>
             </div>
           )}
           
           {/* Featured Project Section */}
           {featuredProjects.length > 0 && (
             <div className="mb-16">
+              <h3 className="text-2xl font-bold mb-8 text-gray-800 dark:text-gray-200 flex items-center">
+                <span className="mr-2">✨</span> Featured Projects
+                <div className="w-16 h-1 bg-indigo-600 ml-4 rounded-full"></div>
+              </h3>
+              
               {featuredProjects.map((project, index) => (
                 <FeaturedProjectHorizontal
                   key={`featured-${project.id}`}

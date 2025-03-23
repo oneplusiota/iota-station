@@ -1,9 +1,13 @@
 /** @type {import('tailwindcss').Config} */
 const colors = require("tailwindcss/colors");
 
-// Remove deprecated color names
+// Remove deprecated color names and use their replacements
 const { 
-  lightBlue, warmGray, trueGray, coolGray, blueGray,
+  lightBlue, // -> sky
+  warmGray,  // -> stone
+  trueGray,  // -> neutral
+  coolGray,  // -> gray
+  blueGray,  // -> slate
   ...restColors 
 } = colors;
 
@@ -73,6 +77,13 @@ module.exports = {
     },
     colors: {
       ...restColors,
+      // Add the renamed colors back with their new names
+      sky: colors.sky,
+      stone: colors.stone,
+      neutral: colors.neutral,
+      gray: colors.gray,
+      slate: colors.slate,
+      // Custom colors
       notion: {
         default: "#e5dada",
         gray: "#9B9A97",

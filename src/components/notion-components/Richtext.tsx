@@ -1,9 +1,24 @@
-import { RichTextItemResponse } from "@notionhq/client/build/src/api-endpoints";
 import React from "react";
 
-type Props = { text: Array<RichTextItemResponse> };
+type RichTextAnnotations = {
+  bold: boolean;
+  italic: boolean;
+  strikethrough: boolean;
+  underline: boolean;
+  code: boolean;
+  color: string;
+};
 
-function getStylesComponent(item: RichTextItemResponse) {
+type RichTextItem = {
+  type: string;
+  plain_text: string;
+  href?: string;
+  annotations: RichTextAnnotations;
+};
+
+type Props = { text: Array<RichTextItem> };
+
+function getStylesComponent(item: RichTextItem) {
   let result = <span>{item.plain_text}</span>;
 
   if (item.href) {

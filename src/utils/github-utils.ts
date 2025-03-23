@@ -7,6 +7,7 @@ import getEnvVar from "./utils";
 
 // Determine the current environment
 const environment = process.env.NEXT_PUBLIC_ENV || 'local';
+console.log("Current environment:", environment);
 
 // Initialize Octokit only for development and production environments
 const octokit = environment !== 'local' && process.env.GITHUB_TOKEN ? 
@@ -17,8 +18,8 @@ const octokit = environment !== 'local' && process.env.GITHUB_TOKEN ?
   null;
 
 // GitHub repository information
-const owner = process.env.GITHUB_OWNER || "shivam-nayak2";
-const repo = process.env.GITHUB_REPO || "iota-station";
+const owner = process.env.GITHUB_OWNER || "oneplusiota";
+const repo = process.env.GITHUB_REPO || "portfolio-data";
 
 // Path to projects directory in the repository
 const projectsPath = "data/projects";
