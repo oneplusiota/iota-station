@@ -37,6 +37,7 @@ const NavItem = ({ href, icon, label, isActive, onClick }: NavItemProps) => (
     href={href} 
     className="group relative"
     onClick={onClick}
+    prefetch={true}
   >
     <div className={`
       flex justify-center items-center w-12 h-12 rounded-full 
@@ -82,7 +83,7 @@ const Navbar = ({
 
   const isActive = (path: string) => {
     if (path === '/') return pathname === '/';
-    return pathname.startsWith(path);
+    return pathname?.startsWith(path) || false;
   };
 
   return (
@@ -91,6 +92,7 @@ const Navbar = ({
         <Link
           href="/"
           className="mb-6 w-12 h-12 flex justify-center items-center rounded-full bg-indigo-600 text-white hover:scale-110 transition-all duration-300 shadow-md"
+          prefetch={true}
         >
           <span className="text-xl font-bold">
             {personalInfo.name.split(' ').map(name => name[0]).join('')}

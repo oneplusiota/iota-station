@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     // Get the image path from the query parameters
-    const searchParams = request.nextUrl.searchParams;
+    const { searchParams } = request.nextUrl;
     const imagePath = searchParams.get('path');
 
     if (!imagePath) {
