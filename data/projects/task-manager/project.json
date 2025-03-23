@@ -1,0 +1,22 @@
+{
+  "id": "task-manager",
+  "title": "Task Manager",
+  "description": "A full-stack task management application with features like task categorization, due dates, priority levels, and user authentication. Built with a modern tech stack for optimal performance.",
+  "technologies": ["React", "TypeScript", "Node.js", "Express", "PostgreSQL", "Tailwind CSS"],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/shivam-nayak2/task-manager",
+      "label": "GitHub Repository"
+    },
+    {
+      "type": "live",
+      "url": "https://tasks.shivam-nayak.dev",
+      "label": "Live Demo"
+    }
+  ],
+  "screenshots": ["screenshot.png"],
+  "section": "Web Development",
+  "published": true,
+  "featured": false
+}

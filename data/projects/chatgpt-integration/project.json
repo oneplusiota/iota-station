@@ -1,0 +1,27 @@
+{
+  "id": "chatgpt-integration",
+  "title": "ChatGPT Integration",
+  "description": "A web application that integrates with OpenAI's ChatGPT API to provide intelligent responses to user queries. Features include conversation history, prompt templates, and response customization.",
+  "technologies": ["React", "Node.js", "OpenAI API", "Express", "MongoDB"],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/shivam-nayak2/chatgpt-integration",
+      "label": "GitHub Repository"
+    },
+    {
+      "type": "live",
+      "url": "https://chatgpt-demo.shivam-nayak.dev",
+      "label": "Live Demo"
+    },
+    {
+      "type": "documentation",
+      "url": "https://github.com/shivam-nayak2/chatgpt-integration/wiki",
+      "label": "Documentation"
+    }
+  ],
+  "screenshots": ["screenshot.png"],
+  "section": "AI & Machine Learning",
+  "published": true,
+  "featured": true
+}

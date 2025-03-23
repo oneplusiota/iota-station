@@ -2,34 +2,71 @@
 import React, { ReactNode, useState } from "react";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { motion, AnimatePresence } from "framer-motion";
 
 type Props = { children: ReactNode };
 
 function MainSection({ children }: Props) {
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [clickAway, setClickAway] = useState<boolean>(false);
+
+  // Page transition variants
+  const pageVariants = {
+    initial: {
+      opacity: 0,
+      y: 20,
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: [0.6, -0.05, 0.01, 0.99],
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -20,
+      transition: {
+        duration: 0.4,
+      },
+    },
+  };
+
   return (
-    <div>
-      <header className="fixed top-0 w-full z-10 bg-transparent backdrop-blur">
-        <Navbar
-          clickAway={clickAway}
-          setClickAway={setClickAway}
-          isMobileMenuOpen={isMobileMenuOpen}
-          setMobileMenuOpen={setMobileMenuOpen}
-        />
-      </header>
-      <main
-        className="flex-1 relative dark:bg-gray-950 dark:text-white top-22 flex justify-center items-center flex-col w-full scroll-smooth"
-        onClick={() => {
-          setClickAway(false);
-          setMobileMenuOpen(false);
-        }}
-      >
-        {children}
-      </main>
-      <div className="flex-1 py-4 dark:bg-gray-950 dark:text-white flex justify-center items-center">
+    <div className="min-h-screen flex flex-col">
+      {/* Sidebar Navigation */}
+      <Navbar
+        clickAway={clickAway}
+        setClickAway={setClickAway}
+        isMobileMenuOpen={isMobileMenuOpen}
+        setMobileMenuOpen={setMobileMenuOpen}
+      />
+      
+      {/* Main Content with Left Padding for Sidebar */}
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={Math.random()} // Force re-render on route change
+          initial="initial"
+          animate="animate"
+          exit="exit"
+          variants={pageVariants}
+          className="flex-grow relative dark:bg-gray-950 dark:text-white pl-24 md:pl-28 flex justify-center items-center w-full scroll-smooth"
+          onClick={() => {
+            if (isMobileMenuOpen) {
+              setClickAway(false);
+              setMobileMenuOpen(false);
+            }
+          }}
+        >
+          {children}
+        </motion.main>
+      </AnimatePresence>
+      
+      {/* Footer */}
+      <footer className="w-full py-6 pl-24 md:pl-28 dark:bg-gray-950 dark:text-white flex justify-center items-center border-t border-gray-200 dark:border-gray-800">
         <Footer />
-      </div>
+      </footer>
     </div>
   );
 }

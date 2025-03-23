@@ -1,26 +1,70 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDownload, faArrowDown } from "@fortawesome/free-solid-svg-icons";
+import { faGithub, faLinkedin } from "@fortawesome/free-brands-svg-icons";
+import personalInfo from "../config/personal-info";
 
 function HeroSection() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsVisible(true);
+  }, []);
+
   return (
-    <div className="flex flex-col justify-center items-center h-full">
-      <h2 className="text-3xl font-thin text-center">Shivam Nayak</h2>
-      <p className="text-xl text-center">
-        Software Developer, Final Year - IIT Kharagpur
-      </p>
-      <a
-        className="flex justify-center items-center px-2 py-1 mt-2 rounded-lg border-[1px] border-black bg-slate-300 hover:bg-slate-200 transition ease-in duration-300"
-        href="https://drive.google.com/file/d/1F5f4Hk5Z4lJmWwDwV2bBRsUpTCA-pm48/view"
-        target="_blank"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          height="1em"
-          viewBox="0 0 512 512"
+    <div className="flex flex-col justify-center items-center h-full relative">
+      <div className={`transform transition-all duration-1000 ${isVisible ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+        <h1 className="text-5xl md:text-6xl font-bold text-center mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+          {personalInfo.name}
+        </h1>
+        <p className="text-xl md:text-2xl text-center mb-8 text-gray-700 dark:text-gray-300">
+          {personalInfo.title}
+        </p>
+        
+        <div className="flex justify-center items-center gap-4 mb-12">
+          <a
+            className="flex justify-center items-center px-6 py-3 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition ease-in duration-300 shadow-md"
+            href={personalInfo.resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Download Resume"
+          >
+            <FontAwesomeIcon icon={faDownload} className="mr-2" />
+            <span>Resume</span>
+          </a>
+          
+          <a 
+            href={personalInfo.social.github}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub Profile"
+            className="flex justify-center items-center w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-300 shadow-md"
+          >
+            <FontAwesomeIcon icon={faGithub} className="text-2xl" />
+          </a>
+          
+          <a 
+            href={personalInfo.social.linkedin}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn Profile"
+            className="flex justify-center items-center w-14 h-14 rounded-full bg-gray-200 dark:bg-gray-800 hover:bg-gray-300 dark:hover:bg-gray-700 transition-colors duration-300 shadow-md"
+          >
+            <FontAwesomeIcon icon={faLinkedin} className="text-2xl" />
+          </a>
+        </div>
+      </div>
+      
+      <div className="absolute bottom-10 animate-bounce w-full flex justify-center">
+        <a 
+          href="#about" 
+          aria-label="Scroll to About section"
+          className="p-3 bg-gray-200 dark:bg-gray-800 rounded-full shadow-md"
         >
-          <path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z" />
-        </svg>
-        <p className="pl-1 dark:text-black">Resume</p>
-      </a>
+          <FontAwesomeIcon icon={faArrowDown} className="text-2xl text-indigo-600 dark:text-indigo-400" />
+        </a>
+      </div>
     </div>
   );
 }

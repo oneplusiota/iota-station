@@ -1,0 +1,21 @@
+{
+  "id": "task-manager",
+  "title": "Task Management App Copy",
+  "description": "A task management application with real-time updates and collaboration features.",
+  "technologies": ["React", "Firebase", "Redux"],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/shivam-nayak2/task-manager",
+      "label": "GitHub Repository"
+    },
+    {
+      "type": "live",
+      "url": "https://task-manager-demo.com",
+      "label": "Live Demo"
+    }
+  ],
+  "screenshots": ["./screenshot.png"],
+  "section": "Productivity Tools",
+  "published": true
+}

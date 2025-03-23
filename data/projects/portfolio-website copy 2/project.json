@@ -1,0 +1,17 @@
+{
+  "id": "portfolio-website-copy-2",
+  "title": "Portfolio Website",
+  "description": "A modern portfolio website built with Next.js and Tailwind CSS. Features responsive design, dark mode, and dynamic content loading.",
+  "technologies": ["Next.js", "Tailwind CSS", "React", "TypeScript"],
+  "links": [
+    {
+      "type": "github",
+      "url": "https://github.com/shivam-nayak2/portfolio-website",
+      "label": "GitHub Repository"
+    }
+  ],
+  "screenshots": ["./screenshot.png"],
+  "section": "Web Development",
+  "published": true,
+  "featured": true
+}
