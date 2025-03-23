@@ -2,7 +2,9 @@
 import React, { useEffect, useState } from "react";
 import BlogPage from "./BlogPage";
 
+// Force static generation
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 export default function Blogs() {
   const [blogs, setBlogs] = useState([]);

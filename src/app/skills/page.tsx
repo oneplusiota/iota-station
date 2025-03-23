@@ -1,8 +1,9 @@
-"use client";
 import React from "react";
 import Skills from "../../components/Skills";
 
+// Force static generation
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 export default function SkillsPage() {
   return (

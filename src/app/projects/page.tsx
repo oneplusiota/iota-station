@@ -1,8 +1,9 @@
-"use client";
 import React from "react";
 import Projects from "../../components/Projects";
 
+// Force static generation
 export const dynamic = 'force-static';
+export const revalidate = false;
 
 export default function ProjectsPage() {
   return (
