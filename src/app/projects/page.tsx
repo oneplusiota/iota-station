@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faExternalLinkAlt, faArrowRight, faTimes, faInfoCircle } from "@fortawesome/free-solid-svg-icons";
@@ -159,10 +160,12 @@ function ProjectModal({ project, onClose }: { project: Project; onClose: () => v
         <div className="p-6 overflow-y-auto">
           {/* Project Image */}
           <div className="relative h-64 mb-6 overflow-hidden rounded-xl">
-            <img
+            <Image
               src={project.image}
               alt={project.title}
-              className="w-full h-full object-cover"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 800px"
             />
           </div>
           
@@ -356,7 +359,7 @@ export default function ProjectsPage() {
         
         if (transformedProjects.length > 0) {
           // If no projects are explicitly marked as featured, mark the first one
-          const hasExplicitFeatured = transformedProjects.some(project => project.featured);
+          const hasExplicitFeatured = transformedProjects.some((project: Project) => project.featured);
           if (!hasExplicitFeatured && transformedProjects.length > 0) {
             transformedProjects[0].featured = true;
           }
@@ -379,6 +382,16 @@ export default function ProjectsPage() {
 
     fetchProjects();
   }, []);
+
+  // Ensure featured projects are displayed in a separate section
+  useEffect(() => {
+    if (projects.length > 0 && !projects.some(project => project.featured)) {
+      // Create a copy of projects array with the first project marked as featured
+      const updatedProjects = [...projects];
+      updatedProjects[0].featured = true;
+      setProjects(updatedProjects);
+    }
+  }, [projects]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -458,6 +471,30 @@ export default function ProjectsPage() {
           {error && (
             <div className="mb-8 p-4 bg-yellow-100 dark:bg-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg">
               <p>No projects found. Please check your data source or connection.</p>
+            </div>
+          )}
+          
+          {/* Featured Projects */}
+          {projects.some(project => project.featured) && (
+            <div className="mb-16">
+              <h2 className="text-2xl font-bold mb-8 text-gray-800 dark:text-white flex items-center">
+                <span className="mr-2">✨</span> Featured Projects
+                <div className="w-16 h-1 bg-indigo-600 ml-4 rounded-full"></div>
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {projects
+                  .filter(project => project.featured && (selectedTag === null || project.tags.includes(selectedTag)))
+                  .map((project, index) => (
+                    <ProjectCard
+                      key={project.id}
+                      project={project}
+                      index={index}
+                      isVisible={isVisible}
+                      onClick={() => setSelectedProject(project)}
+                    />
+                  ))}
+              </div>
             </div>
           )}
           

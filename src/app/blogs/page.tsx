@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarAlt, faClock, faArrowRight, faSearch, faTimes } from "@fortawesome/free-solid-svg-icons";
@@ -17,208 +18,75 @@ type Blog = {
   author?: string;
 };
 
-// Blog Card - Redesigned without images in the main view
-function BlogCard({ blog, index, isVisible, onClick }: { blog: Blog; index: number; isVisible: boolean; onClick: () => void }) {
+// Blog Card - Direct link to blog post
+function BlogCard({ blog, index, isVisible }: { blog: Blog; index: number; isVisible: boolean }) {
   const delay = index * 0.15;
   
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 30 }}
-      animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-      transition={{ duration: 0.6, delay }}
-      className="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-200 dark:border-gray-800 hover:border-indigo-500 relative cursor-pointer"
-      onClick={onClick}
-    >
-      <div className="p-5 flex-grow flex flex-col">
-        {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-3">
-          {blog.tags.slice(0, 2).map((tag, idx) => (
-            <span
-              key={idx}
-              className="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs font-medium"
-            >
-              {tag}
-            </span>
-          ))}
-          {blog.tags.length > 2 && (
-            <span className="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs font-medium">
-              +{blog.tags.length - 2}
-            </span>
-          )}
-        </div>
-        
-        {/* Title */}
-        <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
-          {blog.title}
-        </h3>
-        
-        {/* Meta Info */}
-        <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4 space-x-4">
-          {blog.date && (
-            <div className="flex items-center">
-              <FontAwesomeIcon icon={faCalendarAlt} className="mr-1.5 text-gray-400 dark:text-gray-500" />
-              <span>{new Date(blog.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-            </div>
-          )}
-          
-          {blog.readTime && (
-            <div className="flex items-center">
-              <FontAwesomeIcon icon={faClock} className="mr-1.5 text-gray-400 dark:text-gray-500" />
-              <span>{blog.readTime}</span>
-            </div>
-          )}
-        </div>
-        
-        {/* Description */}
-        {blog.description && (
-          <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 flex-grow line-clamp-3">
-            {blog.description}
-          </p>
-        )}
-        
-        {/* Read Article Button */}
-        <div className="flex justify-center mt-auto">
-          <Link 
-            href={`/blogs/${blog.slug}`}
-            className="flex items-center justify-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-200 font-medium"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <span>Read article</span>
-            <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-          </Link>
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-// Blog Modal - For displaying blog preview
-function BlogModal({ blog, onClose }: { blog: Blog; onClose: () => void }) {
-  // Close modal when clicking outside
-  const modalRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-        onClose();
-      }
-    };
-    
-    const handleEscKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        onClose();
-      }
-    };
-    
-    document.addEventListener('mousedown', handleClickOutside);
-    document.addEventListener('keydown', handleEscKey);
-    
-    // Prevent scrolling when modal is open
-    document.body.style.overflow = 'hidden';
-    
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-      document.removeEventListener('keydown', handleEscKey);
-      document.body.style.overflow = 'auto';
-    };
-  }, [onClose]);
-  
-  return (
-    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+    <Link href={`/blogs/${blog.slug}`} className="block h-full">
       <motion.div 
-        ref={modalRef}
-        initial={{ opacity: 0, scale: 0.9 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.9 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl overflow-hidden max-w-4xl w-full max-h-[90vh] flex flex-col border border-gray-200 dark:border-gray-800"
+        initial={{ opacity: 0, y: 30 }}
+        animate={isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+        transition={{ duration: 0.6, delay }}
+        className="group bg-white dark:bg-gray-900 rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 h-full flex flex-col border border-gray-200 dark:border-gray-800 hover:border-indigo-500 relative"
       >
-        {/* Modal Header */}
-        <div className="relative p-6 border-b border-gray-200 dark:border-gray-800">
-          {/* Close Button */}
-          <button 
-            onClick={onClose}
-            className="absolute top-4 right-4 bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
-          >
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-          
-          <div className="pr-8">
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-3">
-              {blog.tags.map((tag, idx) => (
-                <span
-                  key={idx}
-                  className="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs font-medium"
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
-            
-            {/* Title */}
-            <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-2">
-              {blog.title}
-            </h2>
-            
-            {/* Meta Info */}
-            <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 space-x-4">
-              {blog.author && (
-                <div className="font-medium">
-                  By {blog.author}
-                </div>
-              )}
-              
-              {blog.date && (
-                <div className="flex items-center">
-                  <FontAwesomeIcon icon={faCalendarAlt} className="mr-1.5 text-gray-400 dark:text-gray-500" />
-                  <span>{new Date(blog.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
-                </div>
-              )}
-              
-              {blog.readTime && (
-                <div className="flex items-center">
-                  <FontAwesomeIcon icon={faClock} className="mr-1.5 text-gray-400 dark:text-gray-500" />
-                  <span>{blog.readTime}</span>
-                </div>
-              )}
-            </div>
+        <div className="p-5 flex-grow flex flex-col">
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-3">
+            {blog.tags.slice(0, 2).map((tag, idx) => (
+              <span
+                key={idx}
+                className="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs font-medium"
+              >
+                {tag}
+              </span>
+            ))}
+            {blog.tags.length > 2 && (
+              <span className="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 rounded-full px-3 py-1 text-xs font-medium">
+                +{blog.tags.length - 2}
+              </span>
+            )}
           </div>
-        </div>
-        
-        {/* Modal Content */}
-        <div className="p-6 overflow-y-auto">
-          {/* Cover Image */}
-          {blog.coverImage && (
-            <div className="relative h-64 mb-6 overflow-hidden rounded-xl">
-              <img
-                src={blog.coverImage}
-                alt={blog.title}
-                className="w-full h-full object-cover"
-              />
-            </div>
-          )}
+          
+          {/* Title */}
+          <h3 className="text-xl font-bold mb-3 text-gray-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors duration-300">
+            {blog.title}
+          </h3>
+          
+          {/* Meta Info */}
+          <div className="flex items-center text-sm text-gray-500 dark:text-gray-400 mb-4 space-x-4">
+            {blog.date && (
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faCalendarAlt} className="mr-1.5 text-gray-400 dark:text-gray-500" />
+                <span>{new Date(blog.date).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+              </div>
+            )}
+            
+            {blog.readTime && (
+              <div className="flex items-center">
+                <FontAwesomeIcon icon={faClock} className="mr-1.5 text-gray-400 dark:text-gray-500" />
+                <span>{blog.readTime}</span>
+              </div>
+            )}
+          </div>
           
           {/* Description */}
           {blog.description && (
-            <div className="text-gray-700 dark:text-gray-300 mb-6 text-lg">
+            <p className="text-sm text-gray-700 dark:text-gray-300 mb-5 flex-grow line-clamp-3">
               {blog.description}
-            </div>
+            </p>
           )}
           
-          {/* Read Full Article Button */}
-          <div className="mt-8">
-            <Link
-              href={`/blogs/${blog.slug}`}
-              className="inline-flex items-center justify-center px-6 py-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition-colors duration-200"
-            >
-              <span>Read Full Article</span>
+          {/* Read Article Button */}
+          <div className="flex justify-center mt-auto">
+            <div className="flex items-center justify-center text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors duration-200 font-medium">
+              <span>Read article</span>
               <FontAwesomeIcon icon={faArrowRight} className="ml-2" />
-            </Link>
+            </div>
           </div>
         </div>
       </motion.div>
-    </div>
+    </Link>
   );
 }
 
@@ -229,7 +97,6 @@ export default function BlogsPage() {
   const [isVisible, setIsVisible] = useState(false);
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedBlog, setSelectedBlog] = useState<Blog | null>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -295,6 +162,16 @@ export default function BlogsPage() {
       }
     };
   }, []);
+
+  // Add "Featured" tag if it doesn't exist
+  useEffect(() => {
+    if (blogs.length > 0 && !blogs.some(blog => blog.tags && blog.tags.includes('Featured'))) {
+      // Create a copy of blogs array with the first blog marked as featured
+      const updatedBlogs = [...blogs];
+      updatedBlogs[0].tags = [...(updatedBlogs[0].tags || []), 'Featured'];
+      setBlogs(updatedBlogs);
+    }
+  }, [blogs]);
 
   // Filter blogs based on search query and selected tag
   const filteredBlogs = blogs.filter(blog => {
@@ -411,7 +288,6 @@ export default function BlogsPage() {
                       blog={blog}
                       index={index}
                       isVisible={isVisible}
-                      onClick={() => setSelectedBlog(blog)}
                     />
                   ))}
               </div>
@@ -433,7 +309,6 @@ export default function BlogsPage() {
                     blog={blog}
                     index={index}
                     isVisible={isVisible}
-                    onClick={() => setSelectedBlog(blog)}
                   />
                 ))}
               </div>
@@ -452,14 +327,6 @@ export default function BlogsPage() {
               </div>
             )}
           </div>
-          
-          {/* Blog Modal */}
-          {selectedBlog && (
-            <BlogModal 
-              blog={selectedBlog} 
-              onClose={() => setSelectedBlog(null)} 
-            />
-          )}
         </>
       )}
     </div>
