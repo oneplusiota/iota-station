@@ -1,9 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import Image from "next/image";
-import { motion } from "framer-motion";
-import personalInfo from "../../config/personal-info";
+import React from "react";
 import About from "../../components/About";
+
+export const dynamic = 'force-static';
 
 export default function AboutPage() {
   return (
